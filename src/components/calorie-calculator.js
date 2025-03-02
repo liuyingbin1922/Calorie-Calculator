@@ -26,6 +26,13 @@ export const CalorieCalculatorPage = () => {
         }
     };
 
+    // Function to handle image deletion
+    const handleDeleteImage = () => {
+        setUploadedImage(null);
+        setFoodItems([]);
+        setTotalCalories(0);
+    };
+
     const getBase64 = (file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -36,12 +43,25 @@ export const CalorieCalculatorPage = () => {
     };
 
     // Component for uploading images
-    const ImageUpload = ({ onUpload, uploadedImage }) => {
+    const ImageUpload = ({ onUpload, onDelete, uploadedImage }) => {
         return (
             <div className="text-center p-4">
                 <input id="upload" type="file" accept="image/*" onChange={onUpload} className="hidden" />
-                <div className="image-container h-[380px] md:h-[200px] lg:h-[380px] w-full bg-white rounded-lg overflow-hidden">
-                    {uploadedImage && <img src={uploadedImage} alt="Uploaded Food" className="w-full h-full object-cover" />}
+                <div className="image-container h-[380px] md:h-[200px] lg:h-[380px] w-full bg-white rounded-lg overflow-hidden relative">
+                    {uploadedImage && (
+                        <>
+                            <img src={uploadedImage} alt="Uploaded Food" className="w-full h-full object-cover" />
+                            <button 
+                                onClick={onDelete} 
+                                className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-md"
+                                aria-label="Delete image"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
         );
@@ -122,7 +142,7 @@ export const CalorieCalculatorPage = () => {
             <div className="alert alert-info bg-blue-100 shadow-lg max-w-4xl w-full mb-4">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <span>This is a Free Online Tool.Please note that we use Google Gemini AI, which has a limit of 2 requests per minute. If you encounter any errors, please try again.</span>
+                    <span>This is a Free Online Tool.If you encounter any errors, please try again.</span>
                 </div>
             </div>
 
@@ -135,7 +155,7 @@ export const CalorieCalculatorPage = () => {
                 <div className="flex flex-col md:flex-row gap-4 items-start">
                     <div className="flex-1">
                         <div className="image-upload-area border-2 border-dashed h-[380px] md:h-[200px] lg:h-[380px] border-gray-300 rounded-lg flex justify-center items-center relative text-center bg-white">
-                            <ImageUpload onUpload={handleImageUpload} uploadedImage={uploadedImage} />
+                            <ImageUpload onUpload={handleImageUpload} onDelete={handleDeleteImage} uploadedImage={uploadedImage} />
                             {!uploadedImage && (
                                 <div className="absolute inset-0 flex flex-col justify-center items-center text-gray-500">
                                     <p>No image uploaded</p>
